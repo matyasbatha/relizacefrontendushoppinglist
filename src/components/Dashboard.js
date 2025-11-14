@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 import DetailView from './DetailView';
 import AddMemberModal from './AddMemberModal';
 import AddItemModal from './AddItemModal';
+import AddListModal from './AddListModal';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 // hlavní komponenta pro celou aplikaci - tady se děje všechna ta magie
 function Dashboard() {
@@ -13,6 +15,9 @@ function Dashboard() {
   const [showArchived, setShowArchived] = useState(false);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
+  const [isAddListModalOpen, setIsAddListModalOpen] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+  const [listToDelete, setListToDelete] = useState(null);  // sem ukladam ID seznamu co chci smazat
   
   console.log("Dashboard render - pocet seznamu:", shoppingLists.length);
 
@@ -27,12 +32,12 @@ function Dashboard() {
   );
   console.log("zobrazeny seznamy", displayedLists);
 
-  // vytvářím novej seznam - použil jsem timestamp jako ID, snad to nikdy nekoliduje lol
-  const handleCreateList = () => {
-    console.log("vytvarim novej seznam");
+  // vytvářím novej seznam s názvem od uživatele (dřív to bylo napevno "Nový seznam")
+  const handleCreateList = (listName) => {
+    console.log("vytvarim novej seznam s nazvem:", listName);
     const newList = {
-      id: `list${Date.now()}`,
-      name: 'Nový seznam',
+      id: `list${Date.now()}`,  // použiju timestamp jako ID
+      name: listName,
       ownerId: currentUser.id,
       members: [],
       items: [],
@@ -41,14 +46,24 @@ function Dashboard() {
     console.log("novej seznam:", newList);
     setShoppingLists([...shoppingLists, newList]);
     setSelectedListId(newList.id);
+    setIsAddListModalOpen(false);  // zavru modal po vytvoření
   };
 
+  // otevření potvrzovacího dialogu pro smazání
   const handleDeleteList = (listId) => {
-    console.log("mazu seznam s ID:", listId);
-    setShoppingLists(shoppingLists.filter(list => list.id !== listId));
-    if (selectedListId === listId) {
-      setSelectedListId(displayedLists[0]?.id || null);
+    console.log("chci smazat seznam:", listId);
+    setListToDelete(listId);
+    setIsConfirmDeleteOpen(true);
+  };
+
+  // skutečné smazání až po potvrzení (předtim to mazalo hned bez ptaní)
+  const confirmDeleteList = () => {
+    console.log("mazu seznam s ID:", listToDelete);
+    setShoppingLists(shoppingLists.filter(list => list.id !== listToDelete));
+    if (selectedListId === listToDelete) {
+      setSelectedListId(displayedLists[0]?.id || null);  // vyber první dostupnej seznam
     }
+    setListToDelete(null);
   };
 
   const handleArchiveList = (listId) => {
@@ -95,7 +110,7 @@ function Dashboard() {
   };
 
   // přepínání položky mezi koupeným a nekoupeným (zaškrtávání)
-  // tady musim mapovat seznam a pak ještě položky v něm - nested mapování je dost složitý
+  // tady musim mapovat seznam a pak ještě položky v něm
   const handleToggleItem = (itemId) => {
     console.log("probiha toggle pro item:", itemId);
     setShoppingLists(shoppingLists.map(list => 
@@ -132,7 +147,7 @@ function Dashboard() {
         lists={displayedLists}
         selectedListId={selectedListId}
         onSelectList={setSelectedListId}
-        onCreateList={handleCreateList}
+        onCreateList={() => setIsAddListModalOpen(true)}
         onDeleteList={handleDeleteList}
         showArchived={showArchived}
         onToggleArchived={() => setShowArchived(!showArchived)}
@@ -152,6 +167,22 @@ function Dashboard() {
           onUpdateListName={handleUpdateListName}
         />
       )}
+
+      <AddListModal
+        isOpen={isAddListModalOpen}
+        onClose={() => setIsAddListModalOpen(false)}
+        onAdd={handleCreateList}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={() => {
+          setIsConfirmDeleteOpen(false);
+          setListToDelete(null);
+        }}
+        onConfirm={confirmDeleteList}
+        listName={shoppingLists.find(list => list.id === listToDelete)?.name || ''}
+      />
 
       <AddMemberModal
         isOpen={isAddMemberModalOpen}
