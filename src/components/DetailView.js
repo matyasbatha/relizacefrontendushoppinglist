@@ -122,13 +122,13 @@ function DetailView({
             <div className="flex flex-wrap gap-2">
               {list.members.map(member => (
                 <div
-                  key={member.id}
+                  key={member.userId}
                   className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full flex items-center gap-2"
                 >
                   <span>{member.name}</span>
                   {isOwner && (
                     <button
-                      onClick={() => onRemoveMember(member.id)}
+                      onClick={() => onRemoveMember(member.userId)}
                       className="text-gray-500 hover:text-red-600 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

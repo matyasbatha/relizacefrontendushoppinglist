@@ -12,9 +12,9 @@ export const initialShoppingLists = [
     name: 'Příprava na UU',
     ownerId: 'user1',
     members: [
-      { id: 'member1', name: 'Babiš' },
-      { id: 'member2', name: 'Trump' },
-      { id: 'member3', name: 'Fiala' }
+      { userId: 'member1', name: 'Babiš' },
+      { userId: 'member2', name: 'Trump' },
+      { userId: 'member3', name: 'Fiala' }
     ],
     items: [
       { id: 'item1', name: 'Stíhačky', resolved: false },
@@ -28,8 +28,8 @@ export const initialShoppingLists = [
     name: 'Celonoční makačka',
     ownerId: 'user2',
     members: [
-      { id: 'member4', name: 'Karel' },
-      { id: 'member5', name: 'Jana' }
+      { userId: 'member4', name: 'Karel' },
+      { userId: 'member5', name: 'Jana' }
     ],
     items: [
       { id: 'item4', name: 'Red Bull', resolved: false },
@@ -43,7 +43,7 @@ export const initialShoppingLists = [
     name: 'Rychloběh',
     ownerId: 'user3',
     members: [
-      { id: 'member6', name: 'Petr' }
+      { userId: 'member6', name: 'Petr' }
     ],
     items: [
       { id: 'item7', name: 'Běžecké boty', resolved: true }
@@ -55,7 +55,7 @@ export const initialShoppingLists = [
     name: 'Archivovaný seznam',
     ownerId: 'user1',
     members: [
-      { id: 'member7', name: 'Test User' }
+      { userId: 'member7', name: 'Test User' }
     ],
     items: [
       { id: 'item8', name: 'Starý úkol', resolved: true }
